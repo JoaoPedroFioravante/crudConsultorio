@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h1>Pacientes cadastrados</h1>
+    <div id="listaPacientes"></div>
+    <script>
+        carregarpacientes();
+        async function carregarpacientes() {
+            let pacientes = await fetch("https://ifsp.ddns.net/webservices/clinicaMedica/pacientes");
+            pacientes = await pacientes.json();
+            let div = document.querySelector("#listaPacientes");
+            for(let i = 0; i < pacientes.length; i++){
+                let subdiv = document.createElement("div");
+                let nome = document.createElement("p");
+                let id = document.createElement("p");
+                let dataCadastro = document.createElement("p");
+                let dataNascimento = document.createElement("p");
+                nome.innerText = "nome: "+ pacientes[i].nome;
+                id.innerText = "id: "+pacientes[i].id;
+                dataCadastro.innerText = "data de cadastro: "+pacientes[i].dataCadastro;
+                dataNascimento.innerText = "data de nascimento: "+pacientes[i].dataNascimento;
+                subdiv.append(nome);
+                subdiv.append(id);
+                subdiv.append(dataCadastro);
+                subdiv.append(dataNascimento);
+                div.append(subdiv);
+            }
+            
+        }
+        
+    </script>
+</body>
+</html>

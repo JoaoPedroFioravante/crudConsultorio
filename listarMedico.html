@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h1>Médicos Cadastrados</h1>
+    <div id="listaMedicos"></div><!-- medicos cadastrados irão estar dentro da div que estará nessa div-->
+    <script>
+        carregarDados();
+        async function carregarDados() {
+            let retorno = await fetch( "https://ifsp.ddns.net/webservices/clinicaMedica/medicos");
+            retorno = await retorno.json();
+            let div = document.querySelector("#listaMedicos");
+            
+            for(let i = 0; i < retorno.length; i++){
+                let subdiv = document.createElement("div");
+                let nome = document.createElement("p");
+                let especialidade = document.createElement("p");
+                let id = document.createElement("p");
+                let dataCadastro =  document.createElement("p");
+                nome.innerText = "nome: " + retorno[i].nome;
+                especialidade.innerText =  "especialidade: "+ await especialidades(retorno[i].idEspecialidade);
+                id.innerText = "id: " + retorno[i].id;
+                dataCadastro.innerText = "data de cadastro: " + retorno[i].dataCadastro;
+                subdiv.append(id);
+                subdiv.append(nome);
+                subdiv.append(especialidade);
+                subdiv.append(dataCadastro);
+                div.append(subdiv);
+            }
+        }
+        async function especialidades(id) {
+            let especialidade = await fetch("https://ifsp.ddns.net/webservices/clinicaMedica/especialidades");     
+            especialidade = await especialidade.json();
+            for(let i = 0; i<especialidade.length; i++){
+                if(especialidade[i].id == id){
+                    return especialidade[i].nome;
+                }
+            }
+        }
+    </script>
+</body>
+</html>

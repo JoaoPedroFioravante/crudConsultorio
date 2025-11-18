@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Remover Paciente</title>
+</head>
+<body>
+    <h1>Remover Paciente</h1>
+    <form id="formRemoverPaciente">
+        <p>Digite o Id do paciente que deseja remover</p>
+        <input type="text" name="" id="idPaciente">
+        <br>
+        <button>enviar</button>
+    </form>
+    <script>
+        let form = document.querySelector("#formRemoverPaciente");
+        form.addEventListener("submit", removerPaciente);
+        async function removerPaciente(e) {
+            e.preventDefault();
+            let id = document.querySelector("#idPaciente").value;
+            let optionsDelete = {
+                method : "DELETE",
+                headers: {
+                "Content-Type": "application/json"}
+            }
+            try{
+                let retorno = await fetch(`https://ifsp.ddns.net/webservices/clinicaMedica/pacientes/${id}`, optionsDelete);
+                if(!retorno.ok){
+                    throw new Error("não foi possivel excluir");
+                }
+                console.log("exclusão bem sucedida");
+            }
+            catch(error){
+                console.log(error.message);
+            }
+        }
+    </script>
+</body>
+</html>

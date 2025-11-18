@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <h1>Cadastro de Pacientes</h1>
+    <form id="cadastroPaciente">
+        <p>digite o nome do paciente</p>
+        <input type="text" name="" id="nomePaciente" required>
+        <p>data de nascimento do paciente</p>
+        <input type="date" id="dataNascimento" min="1900-01-01" required>
+        <br>
+        <button>enviar</button>
+    </form>
+    <script>
+        limitaData();
+        let form = document.querySelector("#cadastroPaciente");
+        form.addEventListener("submit", cadastrarPacientes);
+        async function cadastrarPacientes(e) {
+            e.preventDefault();
+            let nome = document.querySelector("#nomePaciente").value;
+            let dataNascimento = document.querySelector("#dataNascimento").value;
+            let optionsPost = {
+                method: "POST",
+                body: JSON.stringify({
+                    "nome":`${nome}`,
+                    "dataNascimento":`${dataNascimento}`,
+                }),
+                headers: {
+                    "Content-type": "application/json"
+                }
+            }
+            try{
+                let retorno = await fetch("https://ifsp.ddns.net/webservices/clinicaMedica/pacientes", optionsPost);
+                if(!retorno.ok){
+                    throw new Error("não foi possivel enviar os dados");
+                }
+            }
+            catch(error){
+                console.log(error.message)
+            }
+        }
+
+
+        function limitaData() {
+            let hoje = new Date()
+            let diaAtual = hoje.getDate();
+            let mesAtual = hoje.getMonth() + 1;
+            if (diaAtual < 10) {
+                diaAtual = `0${diaAtual}`;
+            }
+            if (mesAtual < 10) {
+                mesAtual = `0${mesAtual}`;
+            }
+            let anoAtual = hoje.getFullYear();
+            let data = `${anoAtual}-${mesAtual}-${diaAtual}`;
+            let date = document.querySelector("#dataNascimento");
+            date.setAttribute("max", data);
+        }
+
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Remover Consultas</title>
+</head>
+<body>
+    <h1>Remover Consultas</h1>
+    <form id="removerConsultas">
+        <p>digite o id da consulta que deseja remover</p>
+        <input type="text" id="idConsulta" required>
+        <br>
+        <button>enviar</button>    
+    </form>
+    <script>
+        let form = document.querySelector("#removerConsultas");
+        form.addEventListener("submit", removerConsulta);
+        async function removerConsulta(e) {
+            e.preventDefault();
+            let idConsulta = document.querySelector("#idConsulta").value;
+            let optionsDelete = {
+                method: "DELETE",
+                headers:{
+                    "Content-type": "application/json"
+                }
+            }
+            try{
+                let retorno = await fetch(`https://ifsp.ddns.net/webservices/clinicaMedica/consultas/${idConsulta}`, optionsDelete)
+                if(!retorno.ok){
+                    throw new Error("falha ao remover consulta");
+                }
+                console.log("sucesso na remoção da consulta")
+            }
+            catch(error){
+                console.log(error.message);
+            }
+            }
+        
+    </script>
+</body>
+</html>

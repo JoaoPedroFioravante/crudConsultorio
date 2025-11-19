@@ -7,15 +7,56 @@
 </head>
 <body>
     <h1>Atualização Cadastral Médica</h1>
-    <form >
+    <form id="formAtualizarMedico">
         <p>Insira o Id do médico que deseja atualizar</p>
-        <input type="text" name="" id="IdMedico" placeholder="id do medico" required>
+        <input type="text" name="" id="idMedico" placeholder="id do medico" required>
         <p>Insira o nome do médico que deseja Atualizar</p>
         <input type="text" name="" id="nomeMedico" placeholder="nome do médico" required>
         <p>Insira o id da especialidade do médico</p>
-        <input type="text" name="" id="idEspecialidade" placeholder="id da especialidade médica" required>
+        <select name="especialidade" id="idEspecialidade" required>
+            <option value="1">cardiologista</option>
+            <option value="2">oftalmologista</option>
+            <option value="3">ortopedista</option>
+            <option value="4">oncologista</option>
+            <option value="5">cirurgia geral</option>
+            <option value="6">anestesista</option>
+            <option value="7">psiquiatra</option>
+            <option value="8">cirurgião plástico</option>
+        </select>
         <br>
         <button>enviar</button>
     </form>
+    <script>
+        let form = document.querySelector("#formAtualizarMedico");
+        form.addEventListener("submit", atualizarMedico);
+        async function atualizarMedico(e) {
+            e.preventDefault();
+            let id = document.querySelector("#idMedico").value;
+            let nome = document.querySelector("#nomeMedico").value;
+            let especialidade = document.querySelector("#idEspecialidade").value;
+            let optionsPut = {
+                method: "PUT",
+                body:JSON.stringify({
+                nome: `${nome}`,
+                idEspecialidade : `${especialidade}`,
+            }),
+            headers : {
+                "Content-type": "application/json"
+            }
+            }
+            try{
+                let retorno = await fetch(`https://ifsp.ddns.net/webservices/clinicaMedica/medicos/${id}`, optionsPut);
+                if(!retorno.ok){
+                    throw new Error("não foi possivel alterar");
+                }
+                else{
+                    console.log("alterado com sucesso");
+                }
+            }
+            catch(error){
+                console.log(error.message);
+            }
+        }
+    </script>
 </body>
 </html>

@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>atualizar Paciente</title>
+</head>
+<body>
+    <h1>Atualizar Paciente</h1>
+    <form id="atualizarPaciente">
+        <p>digite o id do Paciente que deseja atualizar</p>
+        <input type="text" id="idPaciente">
+        <p>digite o nome do Paciente</p>
+        <input type="text" id="nomePaciente">
+        <p>digite a data de nascimento do Paciente</p>
+        <input type="date" name="" id="dataNascimento" min="1900-01-01">
+        <br>
+        <button>enviar</button>
+    </form>
+    <script>
+        limitaData();
+        let form = document.querySelector("#atualizarPaciente");
+        form.addEventListener("submit", atualizarPaciente);
+        async function atualizarPaciente(e) {
+            e.preventDefault();
+            let idPaciente = document.querySelector("#idPaciente").value;
+            let nomePaciente = document.querySelector("#nomePaciente").value;
+            let dataNascimento = document.querySelector("#dataNascimento").value;
+            let optionsPut = {
+                method: "PUT",
+                body:JSON.stringify({
+                    "nome": nomePaciente,
+                    "dataNascimento": dataNascimento,
+                }),
+                headers:{
+                    "Content-type": "application/json"
+                }
+            }
+            try{
+                let retorno = await fetch(`https://ifsp.ddns.net/webservices/clinicaMedica/pacientes/${idPaciente}`, optionsPut);
+                if(!retorno.ok){
+                    throw new Error("não foi possivel alterar paciente");
+                }
+                    console.log("alteração feita com sucesso");
+            }
+            catch(error){
+                console.log(error.message);
+            }
+        }
+        function limitaData() {
+            let hoje = new Date()
+            let diaAtual = hoje.getDate();
+            let mesAtual = hoje.getMonth() + 1;
+            if (diaAtual < 10) {
+                diaAtual = `0${diaAtual}`;
+            }
+            if (mesAtual < 10) {
+                mesAtual = `0${mesAtual}`;
+            }
+            let anoAtual = hoje.getFullYear();
+            let data = `${anoAtual}-${mesAtual}-${diaAtual}`;
+            let date = document.querySelector("#dataNascimento");
+            date.setAttribute("max", data);
+        }
+
+    </script>
+</body>
+</html>

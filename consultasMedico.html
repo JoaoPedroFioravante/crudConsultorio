@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Consultas Medico</title>
+</head>
+
+<body>
+    <h1>Consultas Medico</h1>
+    <form id="formConsultas">
+        <p>digite o id do medico</p>
+        <input type="text" id="idMedico">
+        <button>enviar</button>
+    </form>
+    <div id="consultasMedico"></div>
+    <script>
+
+        let form = document.querySelector("#formConsultas");
+        form.addEventListener("submit", consultasMedico);
+        async function consultasMedico(e) {
+            e.preventDefault();
+            let div = document.querySelector("#consultasMedico");
+            div.innerHTML = " ";
+            let idMedico = document.querySelector("#idMedico").value;
+            try {
+                let retorno = await fetch("https://ifsp.ddns.net/webservices/clinicaMedica/consultas");
+                if (!retorno.ok) {
+                    throw new Error("não foi possivel obter as consultas");
+                }
+                retorno = await retorno.json();
+                retorno = retorno.filter((consultas) => (consultas.idMedico == idMedico));
+                if (retorno.length > 0) {
+                    try {
+                        let listaPacientes = await fetch("https://ifsp.ddns.net/webservices/clinicaMedica/pacientes");
+                        if (!listaPacientes.ok) {
+                            throw new Error("não foi possivel receber clientes");
+                        }
+                        listaPacientes = await listaPacientes.json();
+                        let tabela = document.createElement("table");
+                        let thead = document.createElement("thead");
+                        let tr = document.createElement("tr");
+                        let th = document.createElement("th");
+                        let th1 = document.createElement("th");
+                        let th2 = document.createElement("th");
+                        th.innerText = "Data";
+                        th1.innerText = "Nome Paciente";
+                        th2.innerText = "Id consulta";
+                        tr.append(th);
+                        tr.append(th1);
+                        tr.append(th2);
+                        thead.append(tr);
+                        tabela.append(thead);
+                        let tbody = document.createElement("tbody");
+                        for (let consultas of retorno) {
+                            let trx = document.createElement("tr");
+                            let data = document.createElement("th");
+                            let nomePaciente = document.createElement("td");
+                            let id = document.createElement("td");
+                            data.innerText = consultas.data;
+                            id.innerText = consultas.id;
+                            let nome = listaPacientes.filter((paciente) => (consultas.idPaciente == paciente.id));
+                            nome = nome[0].nome;
+                            nomePaciente.innerText = nome;
+                            trx.append(data);
+                            trx.append(nomePaciente);
+                            trx.append(id);
+                            tbody.append(trx);
+                        }
+                        tabela.append(tbody);
+                        div.append(tabela);
+                    }
+                    catch (error) {
+                        console.log(error.message);
+                    }
+                }
+                else {
+                    alert("não existem consultas para esse medico");
+                }
+            }
+            catch (error) {
+                console.log(error.message)
+            }
+            finally {
+                form.reset();
+            }
+        }
+    </script>
+</body>
+
+</html>

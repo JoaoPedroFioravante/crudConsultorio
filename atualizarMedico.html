@@ -51,10 +51,14 @@
                 }
                 else{
                     console.log("alterado com sucesso");
+                    
                 }
             }
             catch(error){
                 console.log(error.message);
+            }
+            finally{
+                form.reset();
             }
         }
     </script>

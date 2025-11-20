@@ -42,9 +42,13 @@
                     throw new Error("não foi possivel alterar paciente");
                 }
                     console.log("alteração feita com sucesso");
-            }
+                    
+                }
             catch(error){
                 console.log(error.message);
+            }
+            finally{
+                form.reset();
             }
         }
         function limitaData() {

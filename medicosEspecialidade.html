@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>listar médicos por especialidade</title>
+</head>
+
+<body>
+    <h1>Listar médicos por especialidade</h1>
+    <form id="especialidadeForm">
+        <p>selecione a especialidade do medico</p>
+        <select id="idEspecialidade" required>
+            <option value="1">cardiologista</option>
+            <option value="2">oftalmologista</option>
+            <option value="3">ortopedista</option>
+            <option value="4">oncologista</option>
+            <option value="5">cirurgia geral</option>
+            <option value="6">anestesista</option>
+            <option value="7">psiquiatra</option>
+            <option value="8">cirurgião plástico</option>
+        </select>
+        <button>enviar</button>
+    </form>
+    <div id="listarMedicos"></div>
+    <script>
+        let form = document.querySelector("#especialidadeForm");
+        form.addEventListener("submit", listarMedicosEspecialidade);
+        async function listarMedicosEspecialidade(e) {
+            e.preventDefault();
+            let idSelecionado = document.querySelector("#idEspecialidade").value;
+            let div = document.querySelector("#listarMedicos");
+            div.innerHTML = " ";
+            try {
+                let retorno = await fetch("https://ifsp.ddns.net/webservices/clinicaMedica/medicos");
+                if (!retorno.ok) {
+                    throw new Error("falha ao receber medicos do servidor")
+                }
+                retorno = await retorno.json();
+                retorno = retorno.filter((medico) => {
+                    if (medico.idEspecialidade == idSelecionado) return true;
+                    return false;
+                })
+
+                try {
+                    let nomeEspecialidade = await fetch("https://ifsp.ddns.net/webservices/clinicaMedica/especialidades");
+                    if (!nomeEspecialidade.ok) {
+                        throw new Error("não foi possivel receber as especialidades");
+                    }
+                    nomeEspecialidade = await nomeEspecialidade.json();
+                    nomeEspecialidade = nomeEspecialidade.filter((especialidade) => (especialidade.id == idSelecionado));
+                    nomeEspecialidade = nomeEspecialidade[0].nome;
+                    if (retorno.length > 0) {
+                        let tabela = document.createElement("table");
+                        let thead = document.createElement("thead");
+                        let tr = document.createElement("tr");
+                        let th = document.createElement("th");
+                        let th1 = document.createElement("th");
+                        let th2 = document.createElement("th");
+                        th.innerText = "ID médico";
+                        th1.innerText = "Nome médico";
+                        th2.innerText = "Especialidade";
+                        tr.append(th);
+                        tr.append(th1);
+                        tr.append(th2);
+                        thead.append(tr);
+                        tabela.append(thead);
+                        let tbody = document.createElement("tbody");
+                        for (let medico of retorno) {
+                            let trx = document.createElement("tr");
+                            let id = document.createElement("th");
+                            let nome = document.createElement("td");
+                            let especialidade = document.createElement("td");
+                            id.innerText = medico.id;
+                            nome.innerText = medico.nome;
+                            especialidade.innerText = nomeEspecialidade;
+                            trx.append(id);
+                            trx.append(nome);
+                            trx.append(especialidade);
+                            tbody.append(trx);
+                        }
+                        tabela.append(tbody);
+                        div.append(tabela);
+                    }
+                    else {
+                        alert("não fo encontrado nenhum medico com essa especialidade");
+                    }
+                }
+                catch (error) {
+                    console.log(error.message);
+                }
+            }
+            catch (error) {
+                console.log(error.message)
+            }
+        }
+    </script>
+</body>
+
+</html>

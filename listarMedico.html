@@ -15,41 +15,67 @@
         async function carregarDados() {
             try {
                 let retorno = await fetch("https://ifsp.ddns.net/webservices/clinicaMedica/medicos");
-                if(!retorno.ok){
+                if (!retorno.ok) {
                     throw new Error("falha na requisição");
                 }
                 retorno = await retorno.json();
                 let div = document.querySelector("#listaMedicos");
-
+                let tabela = document.createElement("table");
+                let thead = document.createElement("thead");
+                let tr = document.createElement("tr");
+                let th = document.createElement("th");
+                let th1 = document.createElement("th");
+                let th2 = document.createElement("th");
+                let th3 = document.createElement("th");
+                th.innerText = "ID médico";
+                th1.innerText = "nome médico";
+                th2.innerText = "especialidade";
+                th3.innerText = "data de Cadastro";
+                tr.append(th);
+                tr.append(th1);
+                tr.append(th2);
+                tr.append(th3);
+                thead.append(tr);
+                tabela.append(thead);
+                let tbody = document.createElement("tbody");
                 for (let i = 0; i < retorno.length; i++) {
-                    let subdiv = document.createElement("div");
-                    let nome = document.createElement("p");
-                    let especialidade = document.createElement("p");
-                    let id = document.createElement("p");
-                    let dataCadastro = document.createElement("p");
-                    nome.innerText = "nome: " + retorno[i].nome;
-                    especialidade.innerText = "especialidade: " + await especialidades(retorno[i].idEspecialidade);
-                    id.innerText = "id: " + retorno[i].id;
-                    dataCadastro.innerText = "data de cadastro: " + retorno[i].dataCadastro;
-                    subdiv.append(id);
-                    subdiv.append(nome);
-                    subdiv.append(especialidade);
-                    subdiv.append(dataCadastro);
-                    div.append(subdiv);
+                    let listaEspecialidade = await especialidades();
+                    let trx = document.createElement("tr");
+                    let nome = document.createElement("td");
+                    let especialidade = document.createElement("td");
+                    let id = document.createElement("th");
+                    let dataCadastro = document.createElement("td");
+                    nome.innerText = retorno[i].nome;
+                    let especialidadeNome = listaEspecialidade.filter((especialidade) => (retorno[i].idEspecialidade == especialidade.id))
+                    especialidadeNome = especialidadeNome[0].nome;
+                    especialidade.innerText = especialidadeNome;
+                    id.innerText = retorno[i].id;
+                    dataCadastro.innerText = retorno[i].dataCadastro;
+                    trx.append(id);
+                    trx.append(nome);
+                    trx.append(especialidade);
+                    trx.append(dataCadastro);
+                    tbody.append(trx);
                 }
+                tabela.append(tbody);
+                div.append(tabela);
 
             }
             catch (error) {
                 console.log(error.message);
             }
         }
-        async function especialidades(id) {
-            let especialidade = await fetch("https://ifsp.ddns.net/webservices/clinicaMedica/especialidades");
-            especialidade = await especialidade.json();
-            for (let i = 0; i < especialidade.length; i++) {
-                if (especialidade[i].id == id) {
-                    return especialidade[i].nome;
+        async function especialidades() {
+            try {
+                let especialidade = await fetch("https://ifsp.ddns.net/webservices/clinicaMedica/especialidades");
+                if (!especialidade.ok) {
+                    throw new Error("não foi possivel obter especialidades");
                 }
+                especialidade = await especialidade.json();
+                return especialidade;
+            }
+            catch (error) {
+                console.log(error.message);
             }
         }
     </script>

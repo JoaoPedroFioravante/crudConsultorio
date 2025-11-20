@@ -1,10 +1,12 @@
 <!DOCTYPE html>
 <html lang="pt-br">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Listar Paciente</title>
 </head>
+
 <body>
     <h1>Pacientes cadastrados</h1>
     <div id="listaPacientes"></div>
@@ -14,25 +16,41 @@
             let pacientes = await fetch("https://ifsp.ddns.net/webservices/clinicaMedica/pacientes");
             pacientes = await pacientes.json();
             let div = document.querySelector("#listaPacientes");
-            for(let i = 0; i < pacientes.length; i++){
-                let subdiv = document.createElement("div");
-                let nome = document.createElement("p");
-                let id = document.createElement("p");
-                let dataCadastro = document.createElement("p");
-                let dataNascimento = document.createElement("p");
-                nome.innerText = "nome: "+ pacientes[i].nome;
-                id.innerText = "id: "+pacientes[i].id;
-                dataCadastro.innerText = "data de cadastro: "+pacientes[i].dataCadastro;
-                dataNascimento.innerText = "data de nascimento: "+pacientes[i].dataNascimento;
-                subdiv.append(nome);
-                subdiv.append(id);
-                subdiv.append(dataCadastro);
-                subdiv.append(dataNascimento);
-                div.append(subdiv);
+            let tabela = document.createElement("table");
+            let thead = document.createElement("thead");
+            let tr = document.createElement("tr");
+            let th = document.createElement("th");
+            let th1 = document.createElement("th");
+            let th2 = document.createElement("th");
+            let th3 = document.createElement("th");
+            th.innerText = "ID paciente";
+            th1.innerText = "nome paciente";
+            th2.innerText = "data de Nascimento";
+            tr.append(th);
+            tr.append(th1);
+            tr.append(th2);
+            thead.append(tr);
+            tabela.append(thead);
+            let tbody = document.createElement("tbody");
+            for (let i = 0; i < pacientes.length; i++) {
+                let trx = document.createElement("tr");
+                let nome = document.createElement("td");
+                let id = document.createElement("th");
+                let dataNascimento = document.createElement("td");
+                nome.innerText = pacientes[i].nome;
+                id.innerText = pacientes[i].id;
+                dataNascimento.innerText = pacientes[i].dataNascimento;
+                trx.append(id);
+                trx.append(nome);
+                trx.append(dataNascimento);
+                tbody.append(trx);
             }
-            
+            tabela.append(tbody);
+            div.append(tabela); 
+
         }
-        
+
     </script>
 </body>
+
 </html>

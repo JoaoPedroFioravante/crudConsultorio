@@ -9,48 +9,9 @@
 
 <body>
     <h1>Pacientes cadastrados</h1>
+    </div>
     <div id="listaPacientes"></div>
-    <script>
-        carregarpacientes();
-        async function carregarpacientes() {
-            let pacientes = await fetch("https://ifsp.ddns.net/webservices/clinicaMedica/pacientes");
-            pacientes = await pacientes.json();
-            let div = document.querySelector("#listaPacientes");
-            let tabela = document.createElement("table");
-            let thead = document.createElement("thead");
-            let tr = document.createElement("tr");
-            let th = document.createElement("th");
-            let th1 = document.createElement("th");
-            let th2 = document.createElement("th");
-            let th3 = document.createElement("th");
-            th.innerText = "ID paciente";
-            th1.innerText = "nome paciente";
-            th2.innerText = "data de Nascimento";
-            tr.append(th);
-            tr.append(th1);
-            tr.append(th2);
-            thead.append(tr);
-            tabela.append(thead);
-            let tbody = document.createElement("tbody");
-            for (let i = 0; i < pacientes.length; i++) {
-                let trx = document.createElement("tr");
-                let nome = document.createElement("td");
-                let id = document.createElement("th");
-                let dataNascimento = document.createElement("td");
-                nome.innerText = pacientes[i].nome;
-                id.innerText = pacientes[i].id;
-                dataNascimento.innerText = pacientes[i].dataNascimento;
-                trx.append(id);
-                trx.append(nome);
-                trx.append(dataNascimento);
-                tbody.append(trx);
-            }
-            tabela.append(tbody);
-            div.append(tabela); 
-
-        }
-
-    </script>
+    <script src="listarPacientes.js"></script>
 </body>
 
 </html>
